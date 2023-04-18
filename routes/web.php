@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\NamesController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -15,4 +17,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+
+$api = app('Dingo\Api\Routing\Router');
+$api->version('v1', function($api){
+    $api->get('names', [NamesController::class, 'show']);
 });
