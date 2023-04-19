@@ -83,6 +83,19 @@ export const constantRoutes = [
   },
 
   {
+    path: '/push',
+    component: Layout,
+    children: [
+      {
+        path: 'ym',
+        name: '上传域名',
+        component: () => import('@/views/push/index'),
+        meta: { title: '上传域名', icon: 'form' }
+      }
+    ]
+  },
+
+  {
     path: '/form',
     component: Layout,
     children: [
