@@ -1,6 +1,6 @@
 <template>
     <div class="app-container">
-        <el-form class="push-names-wrap" ref="form" :model="form">
+        <el-form class="push-names-wrap" ref="form">
           <el-form-item>
             <el-input class="push-names" type="textarea" v-model="desc"></el-input>
             <div class="push-names-num">
@@ -17,15 +17,20 @@ export default{
     data() {
       return {
         desc: '',
-        ymnum:''
+        ymnum:'',
+        names:''
       }
     },
     updated() {
-      return this.ymnum = this.desc;
+      var names = this.desc.split(/\n/).filter(function(s){
+        return s && s.trim();
+      });
+      this.names = names
+      return this.ymnum = names.length;
     },
     methods: {
       onSubmit() {
-        this.$message('submit!')
+        console.log(this.names);
       }
     },
 }
