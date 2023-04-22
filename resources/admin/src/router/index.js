@@ -54,34 +54,18 @@ export const constantRoutes = [
       meta: { title: '仪表盘', icon: 'dashboard' }
     }]
   },
-
   {
-    path: '/example',
-    component: Layout,
-    redirect: '/example/table',
-    children: [
-      {
-        path: 'names',
-        name: '域名列表',
-        component: () => import('@/views/table/index'),
-        meta: { title: '域名列表', icon: 'table' },
-      }
-    ]
-  },
-
-  {
-    path: '/upload',
+    path: '/name',
     component: Layout,
     children: [
       {
-        path: 'ym',
+        path: 'list',
         name: '上传域名',
-        component: () => import('@/views/upload/index'),
-        meta: { title: '上传域名', icon: 'form' }
+        component: () => import('@/views/names/index'),
+        meta: { title: '域名列表', icon: 'form' }
       }
     ]
   },
-
   {
     path: '/push',
     component: Layout,
@@ -90,25 +74,10 @@ export const constantRoutes = [
         path: 'ym',
         name: '上传域名',
         component: () => import('@/views/push/index'),
-        meta: { title: '上传域名', icon: 'form' }
+        meta: { title: '上传域名', icon: 'link' }
       }
     ]
   },
-
-  {
-    path: '/form',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'Form',
-        component: () => import('@/views/form/index'),
-        meta: { title: '上传域名', icon: 'form' }
-      }
-    ]
-  },
-
-
 
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }

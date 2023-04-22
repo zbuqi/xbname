@@ -4,7 +4,7 @@
           <el-form-item>
             <el-input class="push-names" type="textarea" v-model="desc"></el-input>
             <div class="push-names-num">
-              <el-button type="primary" @click="onSubmit">立即上传</el-button>
+              <el-button type="primary" @click="addNames">立即上传</el-button>
               <div class="ym-num"><p>待提交：<b>{{ ymnum }}</b> 条域名</p></div>
             </div>
           </el-form-item>
@@ -13,26 +13,37 @@
 </template>
 
 <script>
+import { addNames } from '@/api/names'
+
 export default{
     data() {
       return {
         desc: '',
-        ymnum:'',
-        names:''
+        ymnum: '',
+        names: '',
       }
     },
     updated() {
       var names = this.desc.split(/\n/).filter(function(s){
         return s && s.trim();
       });
-      this.names = names
-      return this.ymnum = names.length;
+      this.ymnum = names.length;
+      return this.names = names;
     },
     methods: {
-      onSubmit() {
-        console.log(this.names);
+      addNames(){
+        addNames(this.names).then((res)=>{
+          console.log(res);
+          if(res.data) {
+            this.$message({
+              type: "success",
+              message: "提交成功!"
+            });
+            this.desc = '';
+          }
+        })
       }
-    },
+    }
 }
 </script>
 
