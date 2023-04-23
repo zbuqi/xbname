@@ -80,7 +80,13 @@ export default{
   },
   methods: {
     query_names() {
-      query_names('123').then(response => {
+      var data = {};
+      data['page_num'] = 1;
+      data['page_size'] = 50;
+      data['is_beian'] = 1;
+      data = JSON.stringify(data);
+      data = JSON.parse(data);
+      query_names(data).then(response => {
         console.log(response);
       })
     }

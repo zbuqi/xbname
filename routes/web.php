@@ -22,6 +22,6 @@ Route::get('/', function () {
 
 $api = app('Dingo\Api\Routing\Router');
 $api->version('v1', function($api){
-    $api->get('names', [NamesController::class, 'show']);
+    $api->post('names/list', [NamesController::class, 'show']);
     $api->post('name/create', [Namescontroller::class, 'add']);
 });
