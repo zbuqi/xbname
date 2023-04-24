@@ -8,13 +8,15 @@ use App\Models\Names;
 class NamesController extends Controller
 {
     public function show(){
-        $data = file_get_contents('php://input');
-        #Names::paginate(50)
+        $post_data = file_get_contents('php://input');
+        $post_data = json_decode($post_data);
+        $data = Names::paginate($post_data->page_size);
         $res = [];
         if($data){
             $res['code'] = 20000;
             $res['message'] = '数据获取成功';
-            $res['data'] = $data;
+            $res['content'] = $data;
+
         }
         return $res;
     }

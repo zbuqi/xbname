@@ -1,100 +1,115 @@
 <template>
   <div class="app-container">
-    <el-table
-      :data="tableData"
-      stripe
-      style="width:100%">
-      <el-table-column
-        prop="index"
-        label="序号"
-        width="">
-      </el-table-column>
-      <el-table-column
-        prop="name"
-        label="域名"
-        width="">
-      </el-table-column>
-      <el-table-column
-        prop="company_name"
-        label="单位名称"
-        width="">
-      </el-table-column>
-      <el-table-column
-        prop="beian_type"
-        label="单位性质"
-        width="">
-      </el-table-column>
-      <el-table-column
-        prop="beian_name"
-        label="ICP备案号"
-        width="">
-      </el-table-column>
-      <el-table-column
-        prop="site_name"
-        label="网站名称"
-        width="">
-      </el-table-column>
-      <el-table-column
-        prop="beian_at"
-        label="审核时间"
-        width="">
-      </el-table-column>
-      <el-table-column
-        prop="updated_at"
-        label="更新时间"
-        width="">
+
+
+    <el-table v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%">
+      <el-table-column align="center" width="80px" label="序号">
+        <template slot-scope="scope">
+          <span>{{ scope.row.id }}</span>
+        </template>
       </el-table-column>
 
+      <el-table-column align="center" width="150px" label="域名">
+        <template slot-scope="scope">
+          <span>{{ scope.row.name }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column align="center" label="单位名称">
+        <template slot-scope="scope">
+          <span>{{ scope.row.company_name }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column align="center" label="单位性质">
+        <template slot-scope="scope">
+          <span>{{ scope.row.beian_type }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column align="center" label="ICP备案号">
+        <template slot-scope="scope">
+          <span>{{ scope.row.beian_name }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column align="center" label="网站名称">
+        <template slot-scope="scope">
+          <span>{{ scope.row.site_name }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column align="center" label="审核时间">
+        <template slot-scope="scope">
+          <span>{{ scope.row.beian_at }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column align="center" label="更新时间">
+        <template slot-scope="scope">
+          <span>{{ scope.row.updated_at }}</span>
+        </template>
+      </el-table-column>
     </el-table>
+
+    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.page_size" @pagination="getList" />
+
   </div>
 </template>
+
 <script>
-import { query_names } from '@/api/names'
+  import { query_names } from '@/api/names'
+  import Pagination from '@/components/Pagination'
 
-export default{
-  data() {
-    return {
-      tableData: [{
-        index: '1',
-        name: 'phc6.com',
-        company_name: '',
-        beian_type: '',
-        beian_name: '',
-        site_name: '',
-        beian_at: '',
-        updated_at: '',
-      },{
-        index: '2',
-        name: 'enjoy.com',
-        company_name: '',
-        beian_type: '',
-        beian_name: '',
-        site_name: '',
-        beian_at: '',
-        updated_at: '',
-      }]
+  export default {
+    name: 'NamesList',
+    components: { Pagination },
+    filters: {
+      statusFilter(status) {
+        const statusMap = {
+          published: 'success',
+          draft: 'info',
+          deleted: 'danger'
+        }
+        return statusMap[status]
+      }
+    },
+    data() {
+      return {
+        list: null,
+        total: 0,
+        listLoading: true,
+        listQuery: {
+          page: 1,
+          page_size: 50,
+          is_beian: 1
+        }
+      }
+    },
+    created() {
+      this.getList()
+    },
+    methods: {
+      getList() {
+        this.listLoading = true
+        query_names(this.listQuery).then(response => {
+          this.list = response.content.data
+          this.total = response.content.total
+          this.listLoading = false
+          console.log(response)
+        })
+      }
     }
-  },
-  created() {
-    this.query_names();
-  },
-  methods: {
-    query_names() {
-      var data = {};
-      data['page_num'] = 1;
-      data['page_size'] = 50;
-      data['is_beian'] = 1;
-      data = JSON.stringify(data);
-      data = JSON.parse(data);
-      query_names(data).then(response => {
-        console.log(response);
-      })
-    }
-
-
   }
-}
 </script>
-<style lang="scss">
 
+<style scoped>
+  .edit-input {
+    padding-right: 100px;
+  }
+  .cancel-btn {
+    position: absolute;
+    right: 15px;
+    top: 10px;
+  }
 </style>
