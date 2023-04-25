@@ -67,14 +67,26 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/upload',
+    component: Layout,
+    children: [
+      {
+        path: 'excel',
+        name: '上传域名',
+        component: () => import('@/views/upload/excel/index'),
+        meta: { title: '上传域名', icon: 'el-icon-upload' }
+      }
+    ]
+  },
+  {
     path: '/push',
     component: Layout,
     children: [
       {
         path: 'ym',
-        name: '上传域名',
+        name: '提交域名',
         component: () => import('@/views/push/index'),
-        meta: { title: '上传域名', icon: 'link' }
+        meta: { title: '提交域名', icon: 'link' }
       }
     ]
   },
