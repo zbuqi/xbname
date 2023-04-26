@@ -14,3 +14,10 @@ export function addNames(data){
     method: 'POST'
   })
 }
+export function addNamesExcle(data){
+  return request({
+    url: 'http://127.0.0.1:8000/api/name/create/excel',
+    data,
+    method: 'POST'
+  })
+}

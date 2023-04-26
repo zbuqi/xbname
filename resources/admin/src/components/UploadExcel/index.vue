@@ -2,16 +2,16 @@
   <div>
     <input ref="excel-upload-input" class="excel-upload-input" type="file" accept=".xlsx, .xls" @change="handleClick">
     <div class="drop" @drop="handleDrop" @dragover="handleDragover" @dragenter="handleDragover">
-      Drop excel file here or
+      请将需要上传的.xls文件拖到此处
       <el-button :loading="loading" style="margin-left:16px;" size="mini" type="primary" @click="handleUpload">
-        Browse
+        上传文件
       </el-button>
     </div>
   </div>
 </template>
 
 <script>
-import XLSX from 'xlsx'
+import * as XLSX from 'xlsx'
 
 export default {
   props: {
