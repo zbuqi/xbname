@@ -33,16 +33,24 @@
         return false
       },
       handleSuccess({ results, header }) {
-		this.tableData = results
+        this.tableData = results
         this.tableHeader = header
-		addNamesExcle(results).then((res)=>{
-			if(res.data){
-				this.$message({
-				  message: '域名提交成功',
-				  type: 'success'
-				})
-			}
-		})
+        var results = JSON.parse(JSON.stringify(results).replace(/域名/g, 'name'));
+        var results = JSON.parse(JSON.stringify(results).replace(/单位名称/g, 'company_name'));
+        var results = JSON.parse(JSON.stringify(results).replace(/单位性质/g, 'beian_type'));
+        var results = JSON.parse(JSON.stringify(results).replace(/ICP备案号/g, 'beian_name'));
+        var results = JSON.parse(JSON.stringify(results).replace(/网站名称/g, 'site_name'));
+        var results = JSON.parse(JSON.stringify(results).replace(/审核时间/g, 'beian_at'));
+
+        addNamesExcle(results).then((res)=>{
+          if(res.data){
+            this.$message({
+              message: '域名提交成功',
+              type: 'success'
+            })
+          }
+        })
+
 
       }
     }

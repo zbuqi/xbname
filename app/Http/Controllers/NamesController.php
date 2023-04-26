@@ -46,20 +46,13 @@ class NamesController extends Controller
     {
         $data = file_get_contents('php://input');
         $data = json_decode($data, true);
-		
+
         //获取最大id
         $maximum_id = Names::max('id');
-        $insert_data = [];
         foreach ($data as $key => $item) {
-            $insert_data[$key]['id'] = $key + $maximum_id + 1;
-            $insert_data[$key]['name'] = $item['域名'];
-			$insert_data[$key]['company_name'] = $item['单位名称'];
-			$insert_data[$key]['beian_type'] = $item['单位性质'];
-			$insert_data[$key]['beian_name'] = $item['ICP备案号'];
-			$insert_data[$key]['site_name'] = $item['网站名称'];
-			$insert_data[$key]['beian_at'] = date('Y-m-d', strtotime($item['审核时间']));
+            $data[$key]['id'] = $key + $maximum_id + 1;
         }
-        $name_insert = Names::insert($insert_data);
+        $name_insert = Names::insert($data);
         if($name_insert){
             $res = [];
             $res['code'] = 20000;
