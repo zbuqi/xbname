@@ -23,6 +23,7 @@ Route::get('/', function () {
 $api = app('Dingo\Api\Routing\Router');
 $api->version('v1', function($api){
     $api->post('names/list', [NamesController::class, 'show']);
-    $api->post('name/create', [Namescontroller::class, 'add']);
-	$api->post('name/create/excel', [Namescontroller::class, 'addExcel']);
+    $api->post('name/create', [NamesController::class, 'add']);
+    $api->post('name/create/excel', [NamesController::class, 'addExcel']);
+    $api->post('name/update/del_time', [NamesController::class, 'updateDel']);
 });

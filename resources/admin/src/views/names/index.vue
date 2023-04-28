@@ -1,6 +1,10 @@
 <template>
   <div class="app-container">
-
+    <div class="filter-container">
+      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="updateDel">
+        更新
+      </el-button>
+    </div>
 
     <el-table v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%">
       <el-table-column align="center" width="80px" label="序号">
@@ -22,7 +26,7 @@
       </el-table-column>
 
       <el-table-column align="center" label="单位性质">
-        <template slot-scope="row">
+        <template slot-scope="{ row }">
           <span>{{ row.beian_type }}</span>
         </template>
       </el-table-column>
@@ -59,7 +63,7 @@
 </template>
 
 <script>
-  import { query_names } from '@/api/names'
+  import { query_names, updateDelTime } from '@/api/names'
   import Pagination from '@/components/Pagination'
 
   export default {
@@ -80,6 +84,7 @@
         list: null,
         total: 0,
         listLoading: true,
+        updata_names: '',
         listQuery: {
           page: 1,
           page_size: 50,
@@ -97,8 +102,13 @@
           this.list = response.content.data
           this.total = response.content.total
           this.listLoading = false
-          console.log(response)
+          this.updata_names = response.update_names;
+          //console.log(response.update_names);
         })
+      },
+      updateDel(){
+        console.log(this.updata_names);
+		
       }
     }
   }

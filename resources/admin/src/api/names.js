@@ -21,3 +21,10 @@ export function addNamesExcle(data){
     method: 'POST'
   })
 }
+export function updateDelTime(data){
+  return request({
+    url: 'http://127.0.0.1:8000/api/name/update/del_time',
+    data,
+    method: 'POST'
+  })
+}
