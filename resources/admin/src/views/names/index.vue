@@ -7,49 +7,60 @@
     </div>
 
     <el-table v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%">
-      <el-table-column align="center" width="80px" label="序号">
+      <el-table-column align="center" width="60px" label="序号">
         <template slot-scope="{ row }">
           <span>{{ row.id }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" width="150px" label="域名">
+      <el-table-column align="left" width="120px" label="域名">
         <template slot-scope="{ row }">
           <span>{{ row.name }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="单位名称">
+      <el-table-column align="left" label="单位名称">
         <template slot-scope="{ row }">
           <span>{{ row.company_name }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="单位性质">
+      <el-table-column align="center" width="80px" label="单位性质">
         <template slot-scope="{ row }">
           <span>{{ row.beian_type }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="ICP备案号">
+      <el-table-column align="left" label="ICP备案号">
         <template slot-scope="{ row }">
           <span>{{ row.beian_name }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="网站名称">
+      <el-table-column align="left" label="网站名称">
         <template slot-scope="{ row }">
           <span>{{ row.site_name }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="审核时间">
+      <el-table-column align="left" width="100px" label="审核时间">
         <template slot-scope="{ row }">
           <span>{{ row.beian_at }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="更新时间">
+      <el-table-column align="left" label="过期时间">
+        <template slot-scope="{ row }">
+          <span>{{ row.updated_at }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column align="left" label="更新时间">
+        <template slot-scope="{ row }">
+          <span>{{ row.updated_at }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="left" label="操作">
         <template slot-scope="{ row }">
           <span>{{ row.updated_at }}</span>
         </template>
