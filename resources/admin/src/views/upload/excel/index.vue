@@ -1,6 +1,7 @@
 <template>
   <div class="app-container">
     <upload-excel-component :on-success="handleSuccess" :before-upload="beforeUpload" />
+    <div class="ym-num"><p>本次共提交：<b>{{ ymnum }}</b>个。 <span v-html="cfname"></span></p></div>
     <el-table :data="tableData" border highlight-current-row style="width: 100%;margin-top:20px;">
       <el-table-column v-for="item of tableHeader" :key="item" :prop="item" :label="item" />
     </el-table>
@@ -8,51 +9,55 @@
 </template>
 
 <script>
-  import UploadExcelComponent from '@/components/UploadExcel/index.vue'
-  import { addNamesExcle } from '@/api/names'
+import UploadExcelComponent from '@/components/UploadExcel/index.vue'
+import { addNamesExcle } from '@/api/names'
 
-  export default {
-    name: 'UploadExcel',
-    components: { UploadExcelComponent },
-    data() {
-      return {
-        tableData: [],
-        tableHeader: []
+export default {
+  name: 'UploadExcel',
+  components: { UploadExcelComponent },
+  data() {
+    return {
+      ymnum: 0,
+      cfname: '',
+      tableData: [],
+      tableHeader: []
+    }
+  },
+  methods: {
+    beforeUpload(file) {
+      const isLt1M = file.size / 1024 / 1024 < 1
+      if (isLt1M) {
+        return true
       }
+      this.$message({
+        message: 'Please do not upload files larger than 1m in size.',
+        type: 'warning'
+      })
+      return false
     },
-    methods: {
-      beforeUpload(file) {
-        const isLt1M = file.size / 1024 / 1024 < 1
-        if (isLt1M) {
-          return true
-        }
+    handleSuccess({ results, header }) {
+      this.ymnum = results.length
+      this.tableData = []
+      this.tableHeader = header
+      console.log(results)
+      addNamesExcle(results).then((res) => {
         this.$message({
-          message: 'Please do not upload files larger than 1m in size.',
-          type: 'warning'
+          message: res.message,
+          type: 'success'
         })
-        return false
-      },
-      handleSuccess({ results, header }) {
-        this.tableData = results
-        this.tableHeader = header
-        var results = JSON.parse(JSON.stringify(results).replace(/域名/g, 'name'));
-        var results = JSON.parse(JSON.stringify(results).replace(/单位名称/g, 'company_name'));
-        var results = JSON.parse(JSON.stringify(results).replace(/单位性质/g, 'beian_type'));
-        var results = JSON.parse(JSON.stringify(results).replace(/ICP备案号/g, 'beian_name'));
-        var results = JSON.parse(JSON.stringify(results).replace(/网站名称/g, 'site_name'));
-        var results = JSON.parse(JSON.stringify(results).replace(/审核时间/g, 'beian_at'));
-
-        addNamesExcle(results).then((res)=>{
-          if(res.data){
-            this.$message({
-              message: '域名提交成功',
-              type: 'success'
-            })
-          }
-        })
-
-
-      }
+        if (res.data !== 1) {
+          this.tableData = res.data
+          this.cfname = '提交失败，有重复域名<b>' + res.data.length + '</b>个'
+        }
+      })
     }
   }
+}
 </script>
+<style lang="scss">
+  .ym-num b{
+    color: red;
+    font-size:24px;
+    padding:0 5px;
+  }
+</style>

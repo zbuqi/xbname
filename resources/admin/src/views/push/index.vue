@@ -16,34 +16,41 @@
 import { addNames } from '@/api/names'
 
 export default{
-    data() {
-      return {
-        desc: '',
-        ymnum: '',
-        names: '',
-      }
-    },
-    updated() {
-      var names = this.desc.split(/\n/).filter(function(s){
-        return s && s.trim();
-      });
-      this.ymnum = names.length;
-      return this.names = names;
-    },
-    methods: {
-      addNames(){
-        addNames(this.names).then((res)=>{
-          console.log(res);
-          if(res.data) {
+  data() {
+    return {
+      desc: '',
+      ymnum: '',
+      names: ''
+    }
+  },
+  updated() {
+    var names = this.desc.split(/\n/).filter(function(s){
+      return s && s.trim()
+    })
+    this.ymnum = names.length
+    return this.names = names
+  },
+  methods: {
+    addNames() {
+      if(this.names != "") {
+        addNames(this.names).then((res) => {
+          console.log(res)
+          if (res.data) {
             this.$message({
               type: "success",
               message: "提交成功!"
-            });
-            this.desc = '';
+            })
+            this.desc = ''
           }
+        })
+      }else{
+        this.$message({
+          type: "success",
+          message: "提数据为空!"
         })
       }
     }
+  }
 }
 </script>
 

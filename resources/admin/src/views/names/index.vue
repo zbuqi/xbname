@@ -1,11 +1,5 @@
 <template>
   <div class="app-container">
-    <div class="filter-container">
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="updateDel">
-        更新
-      </el-button>
-    </div>
-
     <el-table v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%">
       <el-table-column align="center" width="60px" label="序号">
         <template slot-scope="{ row }">
@@ -51,7 +45,7 @@
 
       <el-table-column align="left" label="过期时间">
         <template slot-scope="{ row }">
-          <span>{{ row.updated_at }}</span>
+          <span>{{ row.expired_at }}</span>
         </template>
       </el-table-column>
 
@@ -74,55 +68,50 @@
 </template>
 
 <script>
-  import { query_names, updateDelTime } from '@/api/names'
-  import Pagination from '@/components/Pagination'
+import { query_names } from '@/api/names'
+import Pagination from '@/components/Pagination'
 
-  export default {
-    name: 'NamesList',
-    components: { Pagination },
-    filters: {
-      statusFilter(status) {
-        const statusMap = {
-          published: 'success',
-          draft: 'info',
-          deleted: 'danger'
-        }
-        return statusMap[status]
+export default {
+  name: 'NamesList',
+  components: { Pagination },
+  filters: {
+    statusFilter(status) {
+      const statusMap = {
+        published: 'success',
+        draft: 'info',
+        deleted: 'danger'
       }
-    },
-    data() {
-      return {
-        list: null,
-        total: 0,
-        listLoading: true,
-        updata_names: '',
-        listQuery: {
-          page: 1,
-          page_size: 50,
-          is_beian: 1
-        }
-      }
-    },
-    created() {
-      this.getList()
-    },
-    methods: {
-      getList() {
-        this.listLoading = true
-        query_names(this.listQuery).then(response => {
-          this.list = response.content.data
-          this.total = response.content.total
-          this.listLoading = false
-          this.updata_names = response.update_names;
-          //console.log(response.update_names);
-        })
-      },
-      updateDel(){
-        console.log(this.updata_names);
-		
+      return statusMap[status]
+    }
+  },
+  data() {
+    return {
+      list: null,
+      total: 0,
+      listLoading: true,
+      listQuery: {
+        page: 1,
+        page_size: 50,
+        is_beian: 1
       }
     }
+  },
+  created() {
+    this.getList()
+  },
+  methods: {
+    getList() {
+      this.listLoading = true
+      query_names(this.listQuery).then(response => {
+        this.list = response.content.data
+        this.total = response.content.total
+        this.listLoading = false
+        this.updata_names = response.update_names;
+        //console.log(response.update_names);
+      })
+    }
   }
+}
 </script>
 
 <style scoped>

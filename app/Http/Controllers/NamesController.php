@@ -11,7 +11,7 @@ class NamesController extends Controller
         $post_data = file_get_contents('php://input');
         $post_data = json_decode($post_data);
         $data = Names::paginate($post_data->page_size);
-        $update_names = Names::where([['logon_at',null], ['expired_at',null]])->get();
+        $update_names = Names::where([['logon_at',null], ['expired_at',null], ['id', '<', '10']])->get();
         $res = [];
         if($data){
             $res['code'] = 20000;
@@ -26,6 +26,8 @@ class NamesController extends Controller
     {
         $data = file_get_contents('php://input');
         $data = json_decode($data);
+        $dqtime = date('Y-m-d H:i:s', time());
+
         //获取最大id
         $maximum_id = Names::max('id');
         //数组查重
@@ -34,6 +36,8 @@ class NamesController extends Controller
         foreach ($data as $key => $item) {
             $insert_data[$key]['id'] = $key + $maximum_id + 1;
             $insert_data[$key]['name'] = $item;
+            $data[$key]['updated_at'] = $dqtime;
+            $data[$key]['created_at'] = $dqtime;
         }
         $name_insert = Names::insert($insert_data);
         if($name_insert){
@@ -45,77 +49,58 @@ class NamesController extends Controller
         }
     }
 
+
+
 	public function addExcel()
     {
         $data = file_get_contents('php://input');
         $data = json_decode($data, true);
-
+        $mysql_datas = json_encode(Names::get(), JSON_UNESCAPED_UNICODE);
+        $dqtime = date('Y-m-d H:i:s', time());
+        $cf_names = [];
         //获取最大id
         $maximum_id = Names::max('id');
         foreach ($data as $key => $item) {
             $data[$key]['id'] = $key + $maximum_id + 1;
+            $data[$key]['updated_at'] = $dqtime;
+            $data[$key]['created_at'] = $dqtime;
+            $is_repeat  = stripos($mysql_datas, $item['name']);
+            if($is_repeat){
+                $cf_names[] = $item;
+            }
         }
-        $name_insert = Names::insert($data);
-        if($name_insert){
-            $res = [];
-            $res['code'] = 20000;
-            $res['message'] = '数据提交成功';
-            $res['data'] = $name_insert;
-            return $res;
-        }
-    }
-
-    public function updateDel()
-    {
-        #$names = Names::where([['logon_at',null], ['expired_at',null]])->get();
-        $post_data = file_get_contents('php://input');
-        $post_data = json_decode($data, true);
-        $url = 'https://tool.chinaz.com/DomainDel?wd=' . $post_data;
 
         $res = [];
         $res['code'] = 20000;
-        $res['message'] = '数据更新成功';
-        $res['data'] = $url;
+        if(count($cf_names) == 0){
+            Names::insert($data);
+            $res['message'] = '数据提交成功';
+            $res['data'] = 1;
+        }else{
+            $res['message'] = '有重复数据';
+            $res['data'] =  $cf_names;
+        }
         return $res;
 
+
         /*
-        $url = 'https://tool.chinaz.com/DomainDel?wd=' . $post_data;
-        $data = $this->bq_curl_post($url);
-        preg_match_all('/class="fr zTContrig"><span>([^<]*)/',$data,$match);
-        $data = Names::where('name', $item->name)->update(['logon_at' => $match[1][1], 'expired_at' => $match[1][2]]);
-        if($data){
-            $res = [];
-            $res['code'] = 20000;
-            $res['message'] = '数据更新成功';
-            $res['data'] = $upnum;
-        }
+        $res = [];
+        $res['code'] = 20000;
+        $res['message'] = '数据提交成功';
+        $res['data'] = $maximum_id;
+        return $res;
+        */
+
+
+        /*  单个
+        $data['id'] = $maximum_id + 1;
+        Names::insert($data);
+
+        $res = [];
+        $res['code'] = 20000;
+        $res['message'] = '数据提交成功';
+        $res['data'] = $data;
         return $res;
         */
     }
-
-
-
-
-    //设置连接抓取页面内容
-    public function bq_curl_post($url){
-        $header = array(
-            'User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36',
-        );
-        $ch = curl_init();
-        $options = array(
-            CURLOPT_URL => $url, //设置链接
-            CURLOPT_RETURNTRANSFER => 1, //设置以文件流的形式返回
-            CURLOPT_HTTPHEADER => $header, //设置HTTP头
-            CURLOPT_CONNECTTIMEOUT => 5, //在发起连接前等待的时间
-            CURLOPT_FOLLOWLOCATION => 1, 
-            CURLOPT_MAXREDIRS => 3, //指定最多的http重定向的数量与ation一起使用
-            CURLOPT_SSL_VERIFYPEER => false,  //禁止https  
-            CURLOPT_HEADER => true,
-        );
-        curl_setopt_array($ch,$options);
-        $content = curl_exec($ch);
-        curl_close($ch);
-        return $content;
-    }
-
 }
