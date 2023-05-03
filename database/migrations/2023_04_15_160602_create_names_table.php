@@ -24,7 +24,11 @@ class CreateNamesTable extends Migration
             $table->string('beian_name','100')->nullable()->comment('备案号');
             $table->string('site_name','100')->nullable()->comment('网站名称');
             $table->timestamp('beian_at')->nullable()->comment('备案审核时间');
-            $table->integer('phone')->nullable()->comment('联系方式');
+            $table->string('phone', '100')->nullable()->comment('联系方式');
+            $table->integer('contact_user_id')->nullable()->comment('电销id');
+            $table->integer('is_contact')->default('0')->comment('是否联系过');
+            $table->longText('contact_at')->nullable()->comment('联系时间');
+            $table->longText('notes')->nullable()->comment('备注');
             $table->timestamp('created_at')->nullable()->comment('创建时间');
             $table->timestamp('updated_at')->nullable()->comment('更新时间');
         });
