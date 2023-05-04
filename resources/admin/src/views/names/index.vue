@@ -106,10 +106,10 @@
           <el-input v-model="temp.beian_at" />
         </el-form-item>
         <el-form-item label="联系方式" prop="name">
-          <el-input v-model="temp.phone" />
+          <el-input v-model="temp.phone" type="textarea" placeholder="例如：张三：18983647923" />
         </el-form-item>
         <el-form-item label="备注" prop="notes">
-          <el-input v-model="temp.notes" />
+          <el-input v-model="temp.notes" type="textarea" placeholder="例如：已联系，加了微信，没有加微信，不卖" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -126,7 +126,7 @@
 </template>
 
 <script>
-import { query_names } from '@/api/names'
+import { query_names, editName } from '@/api/names'
 import Pagination from '@/components/Pagination'
 
 export default {
@@ -177,7 +177,6 @@ export default {
         this.list = response.content.data
         this.total = response.content.total
         this.listLoading = false
-        this.updata_names = response.update_names;
         //console.log(response.update_names);
       })
     },
@@ -187,6 +186,25 @@ export default {
       this.dialogFormVisible = true
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
+      })
+    },
+    updateData(){
+      this.$refs['dataForm'].validate((valid) => {
+        console.log(this.temp);
+        if (valid) {
+          const tempData = Object.assign({}, this.temp)
+          editName(tempData).then((response) => {
+            const index = this.list.findIndex(v => v.id === this.temp.id)
+            this.list.splice(index, 1, this.temp)
+            this.dialogFormVisible = false
+            this.$notify({
+              title: '成功',
+              message: '数据更新成功',
+              type: 'success',
+              duration: 2000
+            })
+          })
+        }
       })
     }
   }

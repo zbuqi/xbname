@@ -26,4 +26,5 @@ $api->version('v1', function($api){
     $api->post('name/create', [NamesController::class, 'add']);
     $api->post('name/create/excel', [NamesController::class, 'addExcel']);
     $api->post('name/update/del_time', [NamesController::class, 'updateDel']);
+    $api->post('name/{id}/edit', [NamesController::class, 'edit']);
 });

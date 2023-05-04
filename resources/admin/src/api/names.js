@@ -7,6 +7,13 @@ export function query_names(data){
     method: 'POST'
   })
 }
+export function editName(data){
+  return request({
+    url: 'http://127.0.0.1:8000/api/name/' + data.id + '/edit',
+    data,
+    method: 'POST'
+  })
+}
 export function addNames(data){
   return request({
     url: 'http://127.0.0.1:8000/api/name/create',

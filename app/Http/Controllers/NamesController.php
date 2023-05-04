@@ -11,13 +11,24 @@ class NamesController extends Controller
         $post_data = file_get_contents('php://input');
         $post_data = json_decode($post_data);
         $data = Names::paginate($post_data->page_size);
-        $update_names = Names::where([['logon_at',null], ['expired_at',null], ['id', '<', '10']])->get();
         $res = [];
         if($data){
             $res['code'] = 20000;
             $res['message'] = '数据获取成功';
             $res['content'] = $data;
-            $res['update_names'] = $update_names;
+        }
+        return $res;
+    }
+
+    public function edit(){
+        $post_data = file_get_contents('php://input');
+        $post_data = json_decode($post_data, true);
+        $post_data['updated_at'] = date('Y-m-d H:i:s', time());
+        $data = Names::where('id', $post_data['id'])->update($post_data);
+        if($data){
+            $res['code'] = 20000;
+            $res['message'] = '数据获取成功';
+            $res['content'] = $data;
         }
         return $res;
     }
@@ -49,8 +60,6 @@ class NamesController extends Controller
         }
     }
 
-
-
 	public function addExcel()
     {
         $data = file_get_contents('php://input');
@@ -81,26 +90,5 @@ class NamesController extends Controller
             $res['data'] =  $cf_names;
         }
         return $res;
-
-
-        /*
-        $res = [];
-        $res['code'] = 20000;
-        $res['message'] = '数据提交成功';
-        $res['data'] = $maximum_id;
-        return $res;
-        */
-
-
-        /*  单个
-        $data['id'] = $maximum_id + 1;
-        Names::insert($data);
-
-        $res = [];
-        $res['code'] = 20000;
-        $res['message'] = '数据提交成功';
-        $res['data'] = $data;
-        return $res;
-        */
     }
 }
