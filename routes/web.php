@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NamesController;
+use App\Http\Controllers\UsersController;
 
 
 /*
@@ -27,4 +28,6 @@ $api->version('v1', function($api){
     $api->post('name/create/excel', [NamesController::class, 'addExcel']);
     $api->post('name/update/del_time', [NamesController::class, 'updateDel']);
     $api->post('name/{id}/edit', [NamesController::class, 'edit']);
+    $api->post('user/valid/name', [UsersController::class, 'valid']);/*验证*/
+    $api->post('user/login', [UsersController::class, 'login']);
 });
