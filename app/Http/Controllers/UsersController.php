@@ -26,9 +26,12 @@ class UsersController extends Controller
         $post_data = json_decode($post_data, true);
         $data = User::where('name', $post_data['username'])->first();
 
-        $res['code'] = 20000;
         if($data['password'] == $post_data['password']){
+            $res['code'] = 20000;
             $res['data']['token'] = 'admin-token';
+        }else{
+            $res['code'] = 60204;
+            $res['message'] = '账号和密码不正确';
         }
         return $res;
     }
