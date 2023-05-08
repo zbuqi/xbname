@@ -7,6 +7,20 @@ use App\Models\User;
 
 class UsersController extends Controller
 {
+    public function show(){
+        //$post_data = file_get_contents('php://input');
+        //$get_data = $token;
+        $token = "admin-token";
+        $res = [];
+        $res["code"] = 20000;
+        $res["data"] = [
+            "roles" => ["admin"],
+            "introduction" => "I am a super administrator",
+            "avatar" => "https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif",
+            "name" => "Super Admin"
+        ];
+        return $res;
+    }
     public function valid(){
         $post_data = file_get_contents('php://input');
         $data = User::where('name',$post_data)->first();

@@ -30,4 +30,5 @@ $api->version('v1', function($api){
     $api->post('name/{id}/edit', [NamesController::class, 'edit']);
     $api->post('user/valid/name', [UsersController::class, 'valid']);/*验证*/
     $api->post('user/login', [UsersController::class, 'login']);
+    $api->get('user/info', [UsersController::class, 'show']);
 });
