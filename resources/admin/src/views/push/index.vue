@@ -32,7 +32,7 @@ export default{
   },
   methods: {
     addNames() {
-      if(this.names != "") {
+      if (this.names != "") {
         addNames(this.names).then((res) => {
           console.log(res)
           if (res.data) {

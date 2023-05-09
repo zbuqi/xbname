@@ -8,12 +8,6 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" width="60px" label="序号">
-        <template slot-scope="{ row }">
-          <span>{{ row }}</span>
-        </template>
-      </el-table-column>
-
       <el-table-column align="left" width="120px" label="域名">
         <template slot-scope="{ row }">
           <span>{{ row.name }}</span>

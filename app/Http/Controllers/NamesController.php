@@ -33,12 +33,13 @@ class NamesController extends Controller
         return $res;
     }
 
+    /*上传域名并检查是否备案*/
     public function add()
     {
         $data = file_get_contents('php://input');
         $data = json_decode($data);
         $dqtime = date('Y-m-d H:i:s', time());
-
+        /*
         //获取最大id
         $maximum_id = Names::max('id');
         //数组查重
@@ -47,8 +48,45 @@ class NamesController extends Controller
         foreach ($data as $key => $item) {
             $insert_data[$key]['id'] = $key + $maximum_id + 1;
             $insert_data[$key]['name'] = $item;
-            $data[$key]['updated_at'] = $dqtime;
-            $data[$key]['created_at'] = $dqtime;
+            $insert_data[$key]['updated_at'] = $dqtime;
+            $insert_data[$key]['created_at'] = $dqtime;
+        }
+        $name_insert = Names::insert($insert_data);
+        if($name_insert){
+            $res = [];
+            $res['code'] = 20000;
+            $res['message'] = '数据提交成功';
+            $res['data'] = $name_insert;
+            return $res;
+        }
+        */
+
+        $res = [];
+        $res['code'] = 20000;
+        $res['message'] = '数据提交成功';
+        $res['data'] = $data;
+        return $res;
+    }
+
+
+
+    /*
+     * 上传域名，只添加域名
+    public function add()
+    {
+        $data = file_get_contents('php://input');
+        $data = json_decode($data);
+        $dqtime = date('Y-m-d H:i:s', time());
+        //获取最大id
+        $maximum_id = Names::max('id');
+        //数组查重
+        $data = array_unique($data);
+        $insert_data = [];
+        foreach ($data as $key => $item) {
+            $insert_data[$key]['id'] = $key + $maximum_id + 1;
+            $insert_data[$key]['name'] = $item;
+            $insert_data[$key]['updated_at'] = $dqtime;
+            $insert_data[$key]['created_at'] = $dqtime;
         }
         $name_insert = Names::insert($insert_data);
         if($name_insert){
@@ -59,6 +97,7 @@ class NamesController extends Controller
             return $res;
         }
     }
+    */
 
 	public function addExcel()
     {
