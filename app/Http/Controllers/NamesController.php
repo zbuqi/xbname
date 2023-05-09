@@ -10,7 +10,7 @@ class NamesController extends Controller
     public function show(){
         $post_data = file_get_contents('php://input');
         $post_data = json_decode($post_data);
-        $data = Names::paginate($post_data->page_size);
+        $data = Names::orderBy('expired_at', 'asc')->paginate($post_data->page_size);
         $res = [];
         if($data){
             $res['code'] = 20000;
@@ -78,11 +78,10 @@ class NamesController extends Controller
                 $cf_names[] = $item;
             }
         }
-
         $res = [];
-        $res['code'] = 20000;
         if(count($cf_names) == 0){
             Names::insert($data);
+            #Names::updateOrInsert($data);
             $res['message'] = '数据提交成功';
             $res['data'] = 1;
         }else{

@@ -1,9 +1,16 @@
 <template>
   <div class="app-container">
-    <el-table v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%">
+    <el-table :key="tableKey" v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%">
       <el-table-column align="center" width="60px" label="序号">
         <template slot-scope="{ row }">
-          <span>{{ row.id }}</span>
+          <el-checkbox v-model="showReviewer" class="filter-item" @change="tableKey=tableKey+1">
+          </el-checkbox>
+        </template>
+      </el-table-column>
+
+      <el-table-column align="center" width="60px" label="序号">
+        <template slot-scope="{ row }">
+          <span>{{ row }}</span>
         </template>
       </el-table-column>
 
@@ -144,6 +151,7 @@ export default {
   },
   data() {
     return {
+      tableKey: 0,
       list: null,
       total: 0,
       listLoading: true,
