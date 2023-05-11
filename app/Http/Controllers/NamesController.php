@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Names;
+use App\Models\TmpNames;
 
 class NamesController extends Controller
 {
@@ -39,26 +40,8 @@ class NamesController extends Controller
         $data = file_get_contents('php://input');
         $data = json_decode($data);
         $dqtime = date('Y-m-d H:i:s', time());
-        //数组查重
-        $data = array_unique($data);
-        $res = [];
-        $res['code'] = 20000;
-        $res['message'] = '数据提交成功';
-        for($i=0; $i<count($data); $i++){
-            $res['data'] = $data[$i];
-            echo $res = json_encode($res);
-        }
-
-    }
-
-    /*
-    public function add()
-    {
-        $data = file_get_contents('php://input');
-        $data = json_decode($data);
-        $dqtime = date('Y-m-d H:i:s', time());
         //获取最大id
-        $maximum_id = Names::max('id');
+        $maximum_id = TmpNames::max('id');
         //数组查重
         $data = array_unique($data);
         $insert_data = [];
@@ -68,7 +51,7 @@ class NamesController extends Controller
             $insert_data[$key]['updated_at'] = $dqtime;
             $insert_data[$key]['created_at'] = $dqtime;
         }
-        $name_insert = Names::insert($insert_data);
+        $name_insert = TmpNames::insert($insert_data);
         if($name_insert){
             $res = [];
             $res['code'] = 20000;
@@ -77,7 +60,6 @@ class NamesController extends Controller
             return $res;
         }
     }
-    */
 
 	public function addExcel()
     {

@@ -28,7 +28,7 @@ export default{
       return s && s.trim()
     })
     this.ymnum = names.length
-    return this.names = names
+    this.names = names
   },
   methods: {
     addNames() {

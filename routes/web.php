@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NamesController;
+use App\Http\Controllers\TmpNamesController;
 use App\Http\Controllers\UsersController;
 
 
@@ -26,8 +27,9 @@ $api->version('v1', function($api){
     $api->post('names/list', [NamesController::class, 'show']);
     $api->post('name/create', [NamesController::class, 'add']);
     $api->post('name/create/excel', [NamesController::class, 'addExcel']);
-    $api->post('name/update/del_time', [NamesController::class, 'updateDel']);
+    $api->get('name/update/beian/tmp_names', [TmpNamesController::class, 'update']);
     $api->post('name/{id}/edit', [NamesController::class, 'edit']);
+
     $api->post('user/valid/name', [UsersController::class, 'valid']);/*验证*/
     $api->post('user/login', [UsersController::class, 'login']);
     $api->get('user/info', [UsersController::class, 'show']);

@@ -60,7 +60,7 @@ export const constantRoutes = [
     children: [
       {
         path: 'list',
-        name: '上传域名',
+        name: '域名列表',
         component: () => import('@/views/names/index'),
         meta: { title: '域名列表', icon: 'form' }
       }
