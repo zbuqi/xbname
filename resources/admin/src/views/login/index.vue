@@ -43,12 +43,10 @@
 
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
 
-      <div class="tips">
-        <span style="margin-right:20px;">username: admin</span>
-        <span> password: any</span>
-      </div>
-
     </el-form>
+    <div class="footer">
+      <div class="beian"><a href="https://beian.miit.gov.cn/" target="_blank">渝ICP备2022009971号</a></div>
+    </div>
   </div>
 </template>
 
@@ -68,8 +66,8 @@ export default {
     }
     return {
       loginForm: {
-        username: 'admin',
-        password: '111111'
+        username: '',
+        password: ''
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
@@ -227,5 +225,21 @@ $light_gray:#eee;
     cursor: pointer;
     user-select: none;
   }
+}
+.footer{
+  width:100%;
+  position:fixed;
+  bottom:0;
+}
+.footer .beian{
+  padding:10px 0;
+  text-align:center;
+}
+.footer .beian a{
+  color:#fff;
+  opacity:0.6;
+}
+.footer .beian a:hover{
+  opacity:0.9;
 }
 </style>
