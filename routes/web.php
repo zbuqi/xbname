@@ -27,9 +27,9 @@ $api->version('v1', function($api){
     $api->post('names/list', [NamesController::class, 'show']);
     $api->post('name/create', [NamesController::class, 'add']);
     $api->post('name/create/excel', [NamesController::class, 'addExcel']);
-    $api->get('name/update/beian/tmp_names', [TmpNamesController::class, 'update']);
     $api->post('name/{id}/edit', [NamesController::class, 'edit']);
-
+    $api->get('name/update/beian/tmp_names', [TmpNamesController::class, 'update']);
+    $api->post('name/beian/tmp_names', [TmpNamesController::class, 'show']);
     $api->post('user/valid/name', [UsersController::class, 'valid']);/*验证*/
     $api->post('user/login', [UsersController::class, 'login']);
     $api->get('user/info', [UsersController::class, 'show']);

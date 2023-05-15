@@ -9,19 +9,30 @@
             </div>
           </el-form-item>
         </el-form>
+        <div class="ym-num"><p>本次共提交：<b>{{ baym }}</b>个。</p></div>
+        <el-table v-loading="listLoading" :data="tableData" border highlight-current-row style="width: 100%;margin-top:20px;">
+          <el-table-column v-for="item of tableHeader" :key="item" :prop="item" :label="item" />
+        </el-table>
     </div>
 </template>
 
 <script>
-import { addNames } from '@/api/names'
+import { addNames, tmpNames } from '@/api/names'
 
 export default{
   data() {
     return {
       desc: '',
-      ymnum: '',
-      names: ''
+      ymnum: 0,
+      names: '',
+      baym: 0,
+      listLoading: true,
+      tableData: [],
+      tableHeader: []
     }
+  },
+  created() {
+    this.getList()
   },
   updated() {
     var names = this.desc.split(/\n/).filter(function(s){
@@ -49,6 +60,15 @@ export default{
           message: "提数据为空!"
         })
       }
+    },
+    getList() {
+      tmpNames().then((res) => {
+        if (res.code == 20000) {
+          this.tableData = res.content
+        }
+        this.listLoading = false
+        console.log(this.tableData)
+      })
     }
   }
 }

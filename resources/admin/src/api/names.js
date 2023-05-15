@@ -28,3 +28,10 @@ export function addNamesExcle(data){
     method: 'POST'
   })
 }
+export function tmpNames(data){
+  return request({
+    url: 'http://127.0.0.1:8000/api/name/beian/tmp_names',
+    data,
+    method: 'POST'
+  })
+}
