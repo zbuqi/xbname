@@ -34,6 +34,7 @@ class TmpNamesController extends Controller
         $res['content'] = $content;
         return $res;
     }
+    /*
     public function update()
     {
         $names = TmpNames::where('is_beian', false)->where('query_num', 0)->take(2)->get();
@@ -47,10 +48,10 @@ class TmpNamesController extends Controller
                 $data = BqFunction::bq_curl_post($url);
                 $data = json_decode($data, true);
                 if ($data['code'] == 0) {
-                    
+
                 } else {
 
-                }  
+                }
             }
             sleep(1);
         }
@@ -86,8 +87,8 @@ class TmpNamesController extends Controller
             sleep(1);
         }
         */
-    }
-    /*
+    //}
+
     public function update()
     {
         for($i=1; $i<10; $i++) {
@@ -120,5 +121,4 @@ class TmpNamesController extends Controller
             sleep(1);
         }
     }
-    */
 }
