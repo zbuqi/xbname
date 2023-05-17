@@ -80,15 +80,25 @@ class NamesController extends Controller
             }
         }
         $res = [];
+        $res['code'] = 20000;
         if(count($cf_names) == 0){
             Names::insert($data);
-            #Names::updateOrInsert($data);
             $res['message'] = '数据提交成功';
             $res['data'] = 1;
         }else{
             $res['message'] = '有重复数据';
             $res['data'] =  $cf_names;
         }
+        return $res;
+    }
+
+    public function addBeianName()
+    {
+        $data = file_get_contents('php://input');
+        $res = [];
+        $res['code'] = 20000;
+        $res['message'] = '数据提交成功';
+        $res['data'] = $data;
         return $res;
     }
 }

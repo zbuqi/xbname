@@ -16,6 +16,8 @@ class TmpNamesController extends Controller
         $post_data = file_get_contents('php://input');
         $post_data = json_decode($post_data);
         $data = TmpNames::where('is_beian', true)->get();
+        $no_query = TmpNames::where('query_num', '0')->get();
+
         $content = [];
         if($data != ""){
             foreach($data as $key=>$item){
@@ -32,8 +34,36 @@ class TmpNamesController extends Controller
         $res['code'] = 20000;
         $res['message'] = '数据获取成功';
         $res['content'] = $content;
+        $res['no_query'] = $no_query;
         return $res;
     }
+
+    public function add()
+    {
+        $data = file_get_contents('php://input');
+        $data = json_decode($data);
+        $dqtime = date('Y-m-d H:i:s', time());
+        //获取最大id
+        $maximum_id = TmpNames::max('id');
+        //数组查重
+        $data = array_unique($data);
+        $insert_data = [];
+        foreach ($data as $key => $item) {
+            $insert_data[$key]['id'] = $key + $maximum_id + 1;
+            $insert_data[$key]['name'] = $item;
+            $insert_data[$key]['updated_at'] = $dqtime;
+            $insert_data[$key]['created_at'] = $dqtime;
+        }
+        $name_insert = TmpNames::insert($insert_data);
+        if($name_insert){
+            $res = [];
+            $res['code'] = 20000;
+            $res['message'] = '数据提交成功';
+            $res['data'] = $name_insert;
+            return $res;
+        }
+    }
+    
     /*
     public function update()
     {
