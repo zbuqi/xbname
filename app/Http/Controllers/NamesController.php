@@ -94,11 +94,38 @@ class NamesController extends Controller
 
     public function addBeianName()
     {
-        $data = file_get_contents('php://input');
+        $post_data = file_get_contents('php://input');;
+        $data = TmpNames::where('is_beian', true)->get();
+
+        $data = json_encode($data, JSON_UNESCAPED_UNICODE);
+        $data = preg_replace('/"id":[0-9]+,/', '', $data);
+        $data = preg_replace('/"query_num":[0-9]+,/', '', $data);
+        $data = preg_replace('/true/', '1', $data);
+        $data = json_decode($data, true);
+
+        $mysql_datas = json_encode(Names::get(), JSON_UNESCAPED_UNICODE);
+        $cf_names = [];
+        //获取最大id
+        $maximum_id = Names::max('id');
+        foreach ($data as $key=>$item) {
+            $data[$key]['id'] = $key + $maximum_id + 1;
+            $is_repeat  = stripos($mysql_datas, $item['name']);
+            if($is_repeat){
+                $cf_names[] = $item;
+            }
+        }
         $res = [];
         $res['code'] = 20000;
-        $res['message'] = '数据提交成功';
-        $res['data'] = $data;
+        if(count($cf_names) == 0){
+            if(Names::insert($data)){
+                TmpNames::where('is_beian', true)->delete();
+            }
+            $res['message'] = '数据提交成功';
+            $res['data'] = 1;
+        }else{
+            $res['message'] = '有重复数据';
+            $res['data'] =  $cf_names;
+        }
         return $res;
     }
 }

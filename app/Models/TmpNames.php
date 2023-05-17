@@ -14,9 +14,9 @@ class TmpNames extends Model
      * $dates 日期格式转换, 布尔值类型转换
      */
     protected $casts = [
-        'beian_at' => 'datetime:Y-m-d',
-        'created_at' => 'datetime:Y-m-d',
-        'updated_at' => 'datetime:Y-m-d',
+        'beian_at' => 'datetime:Y-m-d H:i:s',
+        'created_at' => 'datetime:Y-m-d H:i:s',
+        'updated_at' => 'datetime:Y-m-d H:i:s',
         'is_beian' => 'boolean',
     ];
 }
