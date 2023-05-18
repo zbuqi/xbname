@@ -85,6 +85,7 @@ class TmpNamesController extends Controller
             }
             sleep(1);
         }
+        */
 
         /*
         for($i=1; $i<10; $i++) {
@@ -150,5 +151,17 @@ class TmpNamesController extends Controller
             }
             sleep(1);
         }
+    }
+
+    public function ces(){
+        $name = 'cdjyw.com';
+        $url = 'https://whois.xinnet.com/domainWhois/queryWhois?';
+        $src = $url . 'domainName=' . $name . '&refreshFlag=true';
+        $data = BqFunction::curl_post($src,'');
+        $logon_at = date('Y-m-d H:i:s', strtotime($data['registrantDate']));
+        $expired_at = date('Y-m-d H:i:s', strtotime($data['expirationDate']));
+        echo $data['domainName'] . '  ';
+        echo $logon_at . '  ';
+        echo $expired_at . "<br>";
     }
 }

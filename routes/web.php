@@ -29,10 +29,12 @@ $api->version('v1', function($api){
     $api->post('name/create/beian/names', [NamesController::class, 'addBeianName']);
     $api->post('name/create/excel', [NamesController::class, 'addExcel']);
     $api->post('name/{id}/edit', [NamesController::class, 'edit']);
-
+    $api->get('name/updata/bei_at', [NamesController::class, 'updata_beian_time']);
     $api->get('tmp_name/update/beian/names', [TmpNamesController::class, 'update']);
     $api->post('tmp_name/beian/names', [TmpNamesController::class, 'show']);
     $api->post('tmp_name/create', [TmpNamesController::class, 'add']);
+    /** ces **/
+    $api->get('tmp_name/create/ces', [TmpNamesController::class, 'ces']);
 
     $api->post('user/valid/name', [UsersController::class, 'valid']);/*验证*/
     $api->post('user/login', [UsersController::class, 'login']);

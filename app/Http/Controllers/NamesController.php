@@ -6,12 +6,15 @@ use App\Http\Controllers\Controller;
 use App\Models\Names;
 use App\Models\TmpNames;
 
+use App\Http\Middleware\BqFunction;
+
 class NamesController extends Controller
 {
+    /*获取*/
     public function show(){
         $post_data = file_get_contents('php://input');
         $post_data = json_decode($post_data);
-        $data = Names::orderBy('expired_at', 'asc')->paginate($post_data->page_size);
+        $data = Names::where('expired_at','!=', null)->orderBy('expired_at', 'asc')->paginate($post_data->page_size);
         $res = [];
         if($data){
             $res['code'] = 20000;
@@ -21,6 +24,7 @@ class NamesController extends Controller
         return $res;
     }
 
+    /*编辑*/
     public function edit(){
         $post_data = file_get_contents('php://input');
         $post_data = json_decode($post_data, true);
@@ -34,7 +38,27 @@ class NamesController extends Controller
         return $res;
     }
 
+    /*更新备案域名注册过期时间*/
+    public function updata_beian_time(){
+        $url = 'https://whois.xinnet.com/domainWhois/queryWhois?';
+        $names = Names::where('logon_at', null)->where('expired_at', null)->take(20)->get();
+        if($names != ''){
+            foreach($names as $key=>$item){
+                $src = $url . 'domainName=' . $item['name'] . '&refreshFlag=true';
+                $data = BqFunction::curl_post($src,'');
+                if($data['expirationDate'] != ''){
+                    $logon_at = date('Y-m-d H:i:s', strtotime($data['registrantDate']));
+                    $expired_at = date('Y-m-d H:i:s', strtotime($data['expirationDate']));
+                    $content = Names::where('name', $data['domainName'])->update(['logon_at'=>$logon_at, 'expired_at'=>$expired_at]);
+                    echo $data['domainName'] . $content . "<br>";
+                }
+                sleep(1);
+            }
+        }
+    }
 
+
+    /*添加域名*/
     public function add()
     {
         $data = file_get_contents('php://input');
@@ -61,6 +85,7 @@ class NamesController extends Controller
         }
     }
 
+    /*通过表格添加域名*/
 	public function addExcel()
     {
         $data = file_get_contents('php://input');
@@ -92,6 +117,7 @@ class NamesController extends Controller
         return $res;
     }
 
+    /*通过临时域名添加备案域名*/
     public function addBeianName()
     {
         $post_data = file_get_contents('php://input');;
