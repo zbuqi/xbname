@@ -63,7 +63,7 @@ class TmpNamesController extends Controller
             return $res;
         }
     }
-    
+
     /*
     public function update()
     {
@@ -154,6 +154,21 @@ class TmpNamesController extends Controller
     }
 
     public function ces(){
+        $data = TmpNames::where('is_beian', false)->where('query_num', 0)->take(5)->get();
+        $content = [];
+        foreach($data as $key=>$item){
+            $content[$key]['name'] = $item['name'];
+            $content[$key]['is_beian'] = 1;
+            $content[$key]['beian_name'] = $item['company_name'];
+            $content[$key]['beian_type'] = $item['beian_type'];
+            $content[$key]['beian_name'] = $item['beian_name'];
+            $content[$key]['site_name'] = $item['site_name'];
+            $content[$key]['beian_at'] = $item['beian_at'];
+            $content[$key]['query_num'] = $item['query_num'] +1;
+        }
+        $q = BqFunction::updateBatch('tmp_names', $content);
+        print_r($q);
+        /*
         $name = 'cdjyw.com';
         $url = 'https://whois.xinnet.com/domainWhois/queryWhois?';
         $src = $url . 'domainName=' . $name . '&refreshFlag=true';
@@ -163,5 +178,6 @@ class TmpNamesController extends Controller
         echo $data['domainName'] . '  ';
         echo $logon_at . '  ';
         echo $expired_at . "<br>";
+        */
     }
 }

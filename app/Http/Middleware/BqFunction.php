@@ -54,8 +54,8 @@ class BqFunction
         $headerArray =array("Content-type:application/json;","Accept:application/json");
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE); 
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE); 
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch,CURLOPT_HTTPHEADER,$headerArray);
         $output = curl_exec($ch);
@@ -63,6 +63,34 @@ class BqFunction
         $output = json_decode($output,true);
         return $output;
     }
-    
+    /*批量更新*/
+    public function updateBatch($tableName = "", $multipleData = array()){
+
+        if( $tableName && !empty($multipleData) ) {
+            $updateColumn = array_keys($multipleData[0]);
+            $referenceColumn = $updateColumn[0]; //e.g id
+            unset($updateColumn[0]);
+            $whereIn = "";
+            $q = "UPDATE ".$tableName." SET ";
+            foreach ( $updateColumn as $uColumn ) {
+                $q .=  $uColumn." = CASE ";
+                foreach( $multipleData as $data ) {
+                    $q .= "WHEN ".$referenceColumn." = ".$data[$referenceColumn]." THEN '".$data[$uColumn]."' ";
+                }
+                $q .= "ELSE ".$uColumn." END, ";
+            }
+            foreach( $multipleData as $data ) {
+                $whereIn .= "'".$data[$referenceColumn]."', ";
+            }
+            $q = rtrim($q, ", ")." WHERE ".$referenceColumn." IN (".  rtrim($whereIn, ', ').")";
+            // Update
+            return $q;
+            //return DB::update(DB::raw($q));
+        } else {
+            return false;
+        }
+
+    }
+
 
 }
