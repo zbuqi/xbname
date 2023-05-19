@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NamesController;
 use App\Http\Controllers\TmpNamesController;
 use App\Http\Controllers\UsersController;
+use App\Http\Controllers\IcpController;
 
 
 /*
@@ -24,6 +25,8 @@ Route::get('/', function () {
 
 $api = app('Dingo\Api\Routing\Router');
 $api->version('v1', function($api){
+    $api->get('icp', [IcpController::class, 'show']);
+
     $api->post('names/list', [NamesController::class, 'show']);
     $api->post('name/create', [NamesController::class, 'add']);
     $api->post('name/create/beian/names', [NamesController::class, 'addBeianName']);
