@@ -96,7 +96,13 @@ export default{
     },
     addBeianName() {
       addBeianName("156489").then((res) => {
-        console.log(res.data)
+        if (res.data == 1) {
+          this.$message({
+            type: "success",
+            message: "提交成功!"
+          })
+          console.log(res.data);
+        }
       })
     },
     getList() {
@@ -104,7 +110,7 @@ export default{
         if (res.code == 20000) {
           this.tableHeader = res.content[0]
           this.tableData = res.content
-          this.no_query = res.no_query.length
+          this.no_query = res.no_query
           this.baym = res.content.length
         }
         this.listLoading = false

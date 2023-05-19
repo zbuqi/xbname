@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use Illuminate\Support\Facades\DB;
+
 class BqFunction
 {
     /*
@@ -75,7 +77,7 @@ class BqFunction
             foreach ( $updateColumn as $uColumn ) {
                 $q .=  $uColumn." = CASE ";
                 foreach( $multipleData as $data ) {
-                    $q .= "WHEN ".$referenceColumn." = ".$data[$referenceColumn]." THEN '".$data[$uColumn]."' ";
+                    $q .= "WHEN ".$referenceColumn." = '".$data[$referenceColumn]."' THEN '".$data[$uColumn]."' ";
                 }
                 $q .= "ELSE ".$uColumn." END, ";
             }
@@ -85,7 +87,7 @@ class BqFunction
             $q = rtrim($q, ", ")." WHERE ".$referenceColumn." IN (".  rtrim($whereIn, ', ').")";
             // Update
             return $q;
-            //return DB::update(DB::raw($q));
+            #return DB::update(DB::raw($q));
         } else {
             return false;
         }
