@@ -4,42 +4,43 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 
-use App\Http\Middleware\BqFunction;
 
 class IcpController extends Controller
 {
     public function show(){
+
         header("Access-Control-Allow-Origin:*");
         header("Access-Control-Allow-Methods:GET");
         header("Access-Control-Allow-Headers:x-requested-with,content-type");
         header("Content-Type:text/html,application/json; charset=utf-8");
-        $name = 'xue-ui.com';
-        $content = [];
-        if ($name) {
-            $domain = $this->getTopHost($name);
-            $data = $this->queryIcp($name);
-            if(!$data['code']){
-                $content = $data;
-            }else{
-                if(!$data["data"]){
-                    $content['code'] = 402;
-                    $content['msg'] = "未备案";
-                }else{
-                    $content['code'] = 20000;
-                    $content['msg'] = "查询成功";
-                    $content['data']['name'] = $data["data"]->domain;
-                    $content['data']['company_name'] = $data["data"]->unitName;
-                    $content['data']['beian_type'] = $data["data"]->natureName;
-                    $content['data']['beian_name'] = $data["data"]->serviceLicence;
-                    $content['data']['beian_at'] = $data["data"]->updateRecordTime;
+        $res = [];
+        if (array_key_exists('domain', $_GET) && $_GET['domain']) {
+            $domain = $this->getTopHost($_GET['domain']);
+            if ($domain) {
+                $data = $this->queryIcp($domain);
+                if ($data['code'] == 200) {
+                    $res['code'] = 200;
+                    $res['msg'] = "查询成功";
+                    $res['data']['name'] = $data["data"]->domain;
+                    $res['data']['company_name'] = $data["data"]->unitName;
+                    $res['data']['beian_type'] = $data["data"]->natureName;
+                    $res['data']['beian_name'] = $data["data"]->serviceLicence;
+                    $res['data']['beian_at'] = $data["data"]->updateRecordTime;
+                } else {
+                    $res = $data;
                 }
+            }else{
+                $res['code'] = 404;
+                $res['msg'] = '域名输入错误，或者暂不支持该后缀域名';
             }
         } else {
-            $content['code'] = 401;
-            $content['msg'] = "缺少参数";
+            $res['code'] = 401;
+            $res['msg'] = "缺少参数";
         }
-        return $content;
+        return $res;
     }
+
+    /*调采集函数，根据token采集备案信息*/
     public function queryIcp($domain){
         $token = $this->token();
         $url = "icpAbbreviateInfo/queryByCondition";
@@ -47,18 +48,23 @@ class IcpController extends Controller
         $data = json_encode($data, JSON_UNESCAPED_UNICODE);
         $content = "application/json;charset=UTF-8";
         $query = json_decode($this->curl_post($url, $data, $content, $token));
-        $query = $query->params->list[0];
-        $content = [];
+        $query = $query->params->list;
+        $res = [];
         if(!$token){
-            $content['code'] = 0;
-            $content['msg'] = "服务器请求频率过高，请稍后再试";
-        }else {
-            $content['code'] = 1;
-            $content['msg'] = "查询成功";
-            $content['data'] = $query;
+            $res['code'] = 402;
+            $res['msg'] = "服务器请求频率过高，请稍后再试";
+        }elseif(!$query) {
+            $res['code'] = 403;
+            $res['msg'] = "未备案";
+        }else{
+            $res['code'] = 200;
+            $res['msg'] = "查询成功";
+            $res['data'] = $query[0];
         }
-        return $content ;
+        return $res ;
     }
+
+    /*调采集函数获取token*/
     public function token(){
         $timeStamp = time();
         $authKey = md5("testtest" . $timeStamp);
@@ -69,6 +75,8 @@ class IcpController extends Controller
         $token = $token->params->bussiness;
         return $token;
     }
+
+    /*信息采集函数*/
     public function curl_post($url, $data, $Content, $token) {
         $ip = "101.".mt_rand(1,255).".".mt_rand(1,255).".".mt_rand(1,255);
         $ch = curl_init();
@@ -94,6 +102,8 @@ class IcpController extends Controller
         curl_close($ch);
         return $content;
     }
+
+    /*检查输入的域名链接*/
     public function getTopHost($url) {
         if (stristr($url, "http") === false) {
             $url = "http://" . $url;
@@ -103,14 +113,16 @@ class IcpController extends Controller
         $host = $hosts['host'];
         $data = explode('.', $host);
         $n = count($data);
-        $preg = '/[\w].+\.(com|net|org|gov|edu)\.cn$/';
-        $pregip = '/((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})(\.((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})){3}/';
-        if (($n > 2) && preg_match($preg, $host)) {
+        $preg3 = '/[\w].+\.(com|net|org|gov|edu)\.cn$/';
+        $preg2 = '/[\w].+\.(com|net|org|gov|edu|cn|top|xyz|cc)$/';
+        #$pregip = '/((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})(\.((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})){3}/';
+
+        if (($n == 3) && preg_match($preg3, $host)) {
             $host = $data[$n - 3] . '.' . $data[$n - 2] . '.' . $data[$n - 1];
-        } elseif (preg_match($pregip, $host)) {
-            $host = $host;
-        } else {
+        } elseif (($n == 2) && preg_match($preg2, $host)) {
             $host = $data[$n - 2] . '.' . $data[$n - 1];
+        } else {
+            $host = '';
         }
         return $host;
     }

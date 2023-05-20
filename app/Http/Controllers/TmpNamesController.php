@@ -70,30 +70,25 @@ class TmpNamesController extends Controller
         $content = [];
         if($names->count()){
             foreach ($names as $key=>$item) {
-                $domain = base64_encode($item->name);
-                $app_id = 'kbigoqlchunrijvq';
-                $app_secret = 'a3U1SzA1czNXdTF5cENJOVV3WDZDdz09';
-                $params = '?domain=' . $domain . '&app_id=' . $app_id . '&app_secret=' . $app_secret;
-                $url = 'https://www.mxnzp.com/api/beian/search' . $params;
+                $url = 'http://127.0.0.1:8000/api/icp?domain=' . $item->name;
                 $data = BqFunction::curl_get($url);
                 $content[$key] = $item;
                 $content[$key]['query_num'] = $item->query_nunm+1;
-                if($data['code'] == 1){
-                    if ($data['data']['passTime'] == '') {
-                        $data['data']['passTime'] = null;
+                if($data['code'] == 200){
+                    if ($data['data']['beian_at'] == '') {
+                        $data['data']['beian_at'] = null;
                     }
                     $content[$key]['is_beian'] = 1;
-                    $content[$key]['company_name'] = $data['data']['unit'];
-                    $content[$key]['beian_type'] = $data['data']['type'];
-                    $content[$key]['beian_name'] = $data['data']['icpCode'];
-                    $content[$key]['site_name'] = $data['data']['name'];
-                    $content[$key]['beian_at'] = $data['data']['passTime'];
+                    $content[$key]['company_name'] = $data['data']['company_name'];
+                    $content[$key]['beian_type'] = $data['data']['beian_type'];
+                    $content[$key]['beian_name'] = $data['data']['beian_name'];
+                    $content[$key]['beian_at'] = $data['data']['beian_at'];
                     $content[$key]['query_num'] = $item->query_nunm+1;
                 }
                 sleep(1);
-                print_r($data);
             }
         }
+        print_r($content);
         /*
         if(count($content)){
             $q = BqFunction::updateBatch('tmp_names', $content);

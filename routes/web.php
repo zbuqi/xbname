@@ -5,6 +5,7 @@ use App\Http\Controllers\NamesController;
 use App\Http\Controllers\TmpNamesController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\IcpController;
+use App\Http\Controllers\WhoisController;
 
 
 /*
@@ -26,6 +27,7 @@ Route::get('/', function () {
 $api = app('Dingo\Api\Routing\Router');
 $api->version('v1', function($api){
     $api->get('icp', [IcpController::class, 'show']);
+    $api->get('whois', [WhoisController::class, 'show']);
 
     $api->post('names/list', [NamesController::class, 'show']);
     $api->post('name/create', [NamesController::class, 'add']);
