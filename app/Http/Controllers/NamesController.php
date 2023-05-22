@@ -40,9 +40,9 @@ class NamesController extends Controller
 
     /*更新备案域名注册过期时间*/
     public function updata_beian_time(){
-        $time = time()-(15*86400);
-        $dq_time = date('Y-m-d H:i:s', $time);
-        $updata_names = Names::where('expired_at', '<', $dq_time)->take(100)->orderBy('expired_at', 'asc')->get();
+        $exp_time = date('Y-m-d H:i:s', time()-(15*86400));
+		$up_time = date('Y-m-d H:i:s', time()-(5*86400));
+        $updata_names = Names::where('expired_at', '<', $exp_time)->where('updated_at', '<', $up_time)->take(20)->orderBy('expired_at', 'asc')->get();
         /*需要更新的域名等于空的时候，才更新没有whios的域名*/
         if($updata_names->count()){
             $names = $updata_names;
@@ -63,7 +63,7 @@ class NamesController extends Controller
                     $logon_at = date('Y-m-d H:i:s', strtotime($data['registrantDate']));
                     $expired_at = date('Y-m-d H:i:s', strtotime($data['expirationDate']));
                     $content = Names::where('name', $data['domainName'])->update(['logon_at'=>$logon_at, 'expired_at'=>$expired_at]);
-                    echo $data['domainName'] . $content . "<br>";
+                    echo $data['domainName'] . "：" . $expired_at . "    " . $content . "<br>";
                 }
                 sleep(1);
             }
