@@ -40,9 +40,22 @@ class NamesController extends Controller
 
     /*更新备案域名注册过期时间*/
     public function updata_beian_time(){
-        $url = 'https://whois.xinnet.com/domainWhois/queryWhois?';
-        $names = Names::where('logon_at', null)->where('expired_at', null)->take(20)->get();
-        if($names != ''){
+        $time = time()-(15*86400);
+        $dq_time = date('Y-m-d H:i:s', $time);
+        $updata_names = Names::where('expired_at', '<', $dq_time)->take(100)->orderBy('expired_at', 'asc')->get();
+        /*需要更新的域名等于空的时候，才更新没有whios的域名*/
+        if($updata_names->count()){
+            $names = $updata_names;
+        }else{
+            $names = Names::where('logon_at', null)->where('expired_at', null)->take(20)->get();
+        }
+        /*
+        foreach($names as $key=>$item){
+            echo $key . "、" . $item->name . ": " . $item->expired_at . "<br>";
+        }
+        */
+        if($names->count()){
+            $url = 'https://whois.xinnet.com/domainWhois/queryWhois?';
             foreach($names as $key=>$item){
                 $src = $url . 'domainName=' . $item['name'] . '&refreshFlag=true';
                 $data = BqFunction::curl_post($src,'');
@@ -140,6 +153,7 @@ class NamesController extends Controller
                 $cf_names[] = $item;
             }
         }
+
         $res = [];
         $res['code'] = 20000;
         if(count($cf_names) == 0){

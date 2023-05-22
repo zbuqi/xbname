@@ -60,9 +60,9 @@ export const constantRoutes = [
     children: [
       {
         path: 'list',
-        name: '域名列表',
+        name: '发现域名',
         component: () => import('@/views/names/index'),
-        meta: { title: '域名列表', icon: 'form' }
+        meta: { title: '发现域名', icon: 'form' }
       }
     ]
   },

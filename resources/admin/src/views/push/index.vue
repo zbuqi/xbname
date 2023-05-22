@@ -101,7 +101,7 @@ export default{
             type: "success",
             message: "提交成功!"
           })
-          console.log(res.data);
+          this.getList();
         }
       })
     },
