@@ -20,49 +20,49 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" width="80px" label="单位性质">
+      <el-table-column align="center" width="120px" label="过期时间">
+        <template slot-scope="{ row }">
+          <span>{{ row.expired_at }}</span>
+        </template>
+      </el-table-column>
+	  
+	  <el-table-column align="center" label="联系方式">
+        <template slot-scope="{ row }">
+          <span>{{ row.phone }}</span>
+        </template>
+      </el-table-column>
+	  
+	  <el-table-column align="center" label="备注">
+        <template slot-scope="{ row }">
+          <span>{{ row.notes }}</span>
+        </template>
+      </el-table-column>
+	  
+	  <el-table-column align="center" width="100px" label="单位性质">
         <template slot-scope="{ row }">
           <span>{{ row.beian_type }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" width="110px" label="过期时间">
-        <template slot-scope="{ row }">
-          <span>{{ row.expired_at }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="联系方式">
-        <template slot-scope="{ row }">
-          <span>{{ row.phone }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="left" width="120px" label="网站名称">
+      <el-table-column align="left" label="网站名称">
         <template slot-scope="{ row }">
           <span>{{ row.site_name }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" width="100px" label="审核时间">
+      <el-table-column align="center" width="120px" label="审核时间">
         <template slot-scope="{ row }">
           <span>{{ row.beian_at }}</span>
         </template>
       </el-table-column>
-
-      <el-table-column align="center" width="100px" label="注册时间">
-        <template slot-scope="{ row }">
-          <span>{{ row.logon_at }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" width="100px" label="更新时间">
+	  
+	  <el-table-column align="center" width="120px" label="更新时间">
         <template slot-scope="{ row }">
           <span>{{ row.updated_at }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" width="240px" label="操作">
+      <el-table-column align="center" width="250px" label="操作">
         <template slot-scope="{ row }">
           <el-button type="primary" size="mini" @click="handleUpdate(row)">
             编辑

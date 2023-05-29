@@ -148,10 +148,12 @@ class NamesController extends Controller
         $maximum_id = Names::max('id');
         foreach ($data as $key=>$item) {
             $data[$key]['id'] = $key + $maximum_id + 1;
+			/*
             $is_repeat  = stripos($mysql_datas, $item['name']);
             if($is_repeat){
                 $cf_names[] = $item;
             }
+			*/
         }
 
         $res = [];

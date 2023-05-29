@@ -68,6 +68,8 @@ class TmpNamesController extends Controller
     {
         $names = TmpNames::where('is_beian', false)->where('query_num', 0)->take(2)->get();
         $content = [];
+
+        /*
         if($names->count()){
             foreach ($names as $key=>$item) {
                 $url = 'http://127.0.0.1:8000/api/icp?domain=' . $item->name;
@@ -88,7 +90,8 @@ class TmpNamesController extends Controller
                 sleep(1);
             }
         }
-        print_r($content);
+        */
+        echo $names->count();
         /*
         if(count($content)){
             $q = BqFunction::updateBatch('tmp_names', $content);
