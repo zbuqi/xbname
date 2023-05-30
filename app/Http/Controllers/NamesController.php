@@ -68,6 +68,8 @@ class NamesController extends Controller
                 sleep(1);
             }
         }
+        echo '1';
+        echo $updata_names->count();
     }
 
 
