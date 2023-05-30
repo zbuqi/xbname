@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Names;
 use App\Models\TmpNames;
 use App\Jobs\ProcessPodcast;
+use App\Http\Controllers\IcpController as Icp;
+
 
 use App\Http\Middleware\BqFunction;
 
@@ -68,13 +70,11 @@ class TmpNamesController extends Controller
     {
         $names = TmpNames::where('is_beian', false)->where('query_num', 0)->take(2)->get();
         $content = [];
-
-        /*
+        $icp = new Icp;
         if($names->count()){
             foreach ($names as $key=>$item) {
-                $url = 'http://127.0.0.1:8000/api/icp?domain=' . $item->name;
-                $data = BqFunction::curl_get($url);
-                $content[$key] = $item;
+                $data = $icp->queryIcp($item->name);
+                $content[$key]['name'] = $item->name;
                 $content[$key]['query_num'] = $item->query_nunm+1;
                 if($data['code'] == 200){
                     if ($data['data']['beian_at'] == '') {
@@ -90,8 +90,7 @@ class TmpNamesController extends Controller
                 sleep(1);
             }
         }
-        */
-        echo $names->count();
+
         /*
         if(count($content)){
             $q = BqFunction::updateBatch('tmp_names', $content);
