@@ -68,37 +68,42 @@ class TmpNamesController extends Controller
 
     public function update()
     {
-        $names = TmpNames::where('is_beian', false)->where('query_num', 0)->take(2)->get();
+        $names = TmpNames::where('is_beian', false)->where('query_num', 0)->take(20)->get();
         $content = [];
         $icp = new Icp;
+        $bq = new BqFunction;
         if($names->count()){
             foreach ($names as $key=>$item) {
                 $data = $icp->queryIcp($item->name);
                 $content[$key]['name'] = $item->name;
                 $content[$key]['query_num'] = $item->query_nunm+1;
                 if($data['code'] == 200){
-                    if ($data['data']['beian_at'] == '') {
-                        $data['data']['beian_at'] = null;
-                    }
                     $content[$key]['is_beian'] = 1;
-                    $content[$key]['company_name'] = $data['data']['company_name'];
-                    $content[$key]['beian_type'] = $data['data']['beian_type'];
-                    $content[$key]['beian_name'] = $data['data']['beian_name'];
-                    $content[$key]['beian_at'] = $data['data']['beian_at'];
-                    $content[$key]['query_num'] = $item->query_nunm+1;
+                    $content[$key]['company_name'] = $data['data']->unitName;
+                    $content[$key]['beian_type'] = $data['data']->natureName;
+                    $content[$key]['beian_name'] = $data['data']->serviceLicence;
+                    $content[$key]['beian_at'] = $data['data']->updateRecordTime;
+                }else{
+                    $content[$key]['is_beian'] = 0;
+                    $content[$key]['company_name'] = null;
+                    $content[$key]['beian_type'] = null;
+                    $content[$key]['beian_name'] = null;
+                    $content[$key]['beian_at'] = '2023-06-01 00:00:00';
                 }
+                print_r($content[$key]);
+                echo "<br>";
                 sleep(1);
             }
         }
-
-        /*
         if(count($content)){
-            $q = BqFunction::updateBatch('tmp_names', $content);
-            print_r($q);
+            $q = $bq->updateBatch('tmp_names', $content);
+            if($q){
+                print_r($q);
+                echo '数据更新成功';
+            }else{
+                echo "更新数据为空";
+            }
         }
-        */
-
-
 
     }
 
@@ -137,9 +142,6 @@ class TmpNamesController extends Controller
     }
     */
 
-
-
-
     public function ces(){
         $data = TmpNames::where('is_beian', false)->where('query_num', 0)->take(2)->get();
         $content = [];
@@ -159,16 +161,5 @@ class TmpNamesController extends Controller
         echo "<br>";
         echo "<br>";
         print_r($q);
-        /*
-        $name = 'cdjyw.com';
-        $url = 'https://whois.xinnet.com/domainWhois/queryWhois?';
-        $src = $url . 'domainName=' . $name . '&refreshFlag=true';
-        $data = BqFunction::curl_post($src,'');
-        $logon_at = date('Y-m-d H:i:s', strtotime($data['registrantDate']));
-        $expired_at = date('Y-m-d H:i:s', strtotime($data['expirationDate']));
-        echo $data['domainName'] . '  ';
-        echo $logon_at . '  ';
-        echo $expired_at . "<br>";
-        */
     }
 }

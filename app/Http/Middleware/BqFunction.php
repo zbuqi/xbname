@@ -86,8 +86,7 @@ class BqFunction
             }
             $q = rtrim($q, ", ")." WHERE ".$referenceColumn." IN (".  rtrim($whereIn, ', ').")";
             // Update
-            return $q;
-            //return DB::update(DB::raw($q));
+            return DB::update(DB::raw($q));
         } else {
             return false;
         }
