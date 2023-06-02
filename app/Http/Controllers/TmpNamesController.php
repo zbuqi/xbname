@@ -68,7 +68,7 @@ class TmpNamesController extends Controller
 
     public function update()
     {
-        $names = TmpNames::where('is_beian', false)->where('query_num', 0)->take(20)->get();
+        $names = TmpNames::where('is_beian', false)->where('query_num', 0)->take(10)->get();
         $content = [];
         $icp = new Icp;
         $bq = new BqFunction;
