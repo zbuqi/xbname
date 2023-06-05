@@ -1,6 +1,6 @@
 module.exports = {
 
-  title: 'Vue Admin Template',
+  title: '西部域名管理系统',
 
   /**
    * @type {boolean} true | false
