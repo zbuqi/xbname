@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NamesController;
 use App\Http\Controllers\TmpNamesController;
 use App\Http\Controllers\UsersController;
+use App\Http\Controllers\BaQueryController;
 use App\Http\Controllers\IcpController;
 use App\Http\Controllers\WhoisController;
 
@@ -45,3 +46,6 @@ $api->version('v1', function($api){
     $api->post('user/login', [UsersController::class, 'login']);
     $api->get('user/info', [UsersController::class, 'show']);
 });
+
+Route::get('update/beian/tmp_name/{id}', [BaQueryController::class, 'show']);
+Route::get('update/beian/list', [BaQueryController::class, 'list']);
