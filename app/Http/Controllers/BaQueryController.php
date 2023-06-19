@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Names;
 use App\Models\TmpNames;
-use App\Jobs\ProcessPodcast;
+use App\Jobs\UpdateBa;
 use App\Http\Controllers\IcpController as Icp;
 
 
@@ -37,10 +37,13 @@ class BaQueryController extends Controller
     public function list()
     {
         $names = TmpNames::where('is_beian', false)->where('query_num', 0)->take(60)->get();
-        $content = [];
+        #$content = [];
         foreach($names as $item){
-            $content[] = $item->id;
+            #$content[] = $item->id;
+            $this->dispatch(new UpdateBa($item->id));
+            echo $item->name;
+            echo '<br>';
         }
-        return view('ba_query', ['ids' => $content]);
+        #return view('ba_query', ['ids' => $content]);
     }
 }
