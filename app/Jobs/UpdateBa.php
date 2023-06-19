@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Http\Controllers\IcpController as Icp;
+use App\Http\Middleware\BqFunction;
 use App\Models\TmpNames;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
@@ -16,15 +17,19 @@ class UpdateBa implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $id;
+    protected $name;
+    protected $host;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($id)
+    public function __construct($id, $name, $host)
     {
         $this->id = $id;
+        $this->name = $name;
+        $this->host = $host;
     }
 
     /**
@@ -34,22 +39,28 @@ class UpdateBa implements ShouldQueue
      */
     public function handle()
     {
-        sleep(2);
-        $icp = new Icp;
-        $data = TmpNames::findOrFail($this->id);
-        $queryIcp = $icp->queryIcp($data->name);
+        $BqFunction = new BqFunction;
+        $url = 'http://' . $this->host . '/?domain=' . $this->name;
+        $data = $BqFunction->curl_get($url);
         $content = [];
-        $content['name'] = $data->name;
-        $content['query_num'] = $data->query_nunm+1;
         if($data['code'] == 200){
+            $content['name'] = $this->name;
+            $content['query_num'] = 1;
             $content['is_beian'] = 1;
-            $content['company_name'] = $queryIcp['data']->unitName;
-            $content['beian_type'] = $queryIcp['data']->natureName;
-            $content['beian_name'] = $queryIcp['data']->serviceLicence;
-            $content['beian_at'] = $queryIcp['data']->updateRecordTime;
+            $content['company_name'] = $data['data']['unitName'];
+            $content['beian_type'] = $data['data']['natureName'];
+            $content['beian_name'] = $data['data']['serviceLicence'];
+            $content['beian_at'] = $data['data']['updateRecordTime'];
+        }elseif($data['code'] == 403){
+            $content['name'] = $this->name;
+            $content['query_num'] = 1;
         }
-        if($data['code'] == 200 or $data['code'] == 403){
-            $update = TmpNames::where('id', $this->id)->update($content);
+        if($content){
+            TmpNames::where('id', $this->id)->update($content);
+            print_r($content);
+        }else{
+            print_r($data);
         }
+
     }
 }

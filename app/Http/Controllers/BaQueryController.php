@@ -36,14 +36,17 @@ class BaQueryController extends Controller
 
     public function list()
     {
+        $host = [
+            'beian.cqcwsk.com',
+            'beian.phc6.com',
+            'beian.cqcesk.com',
+            'beian.xbname.com'
+        ];
         $names = TmpNames::where('is_beian', false)->where('query_num', 0)->take(60)->get();
-        #$content = [];
-        foreach($names as $item){
-            #$content[] = $item->id;
-            $this->dispatch(new UpdateBa($item->id));
-            echo $item->name;
+        foreach($names as $key=>$item){
+            $this->dispatch(new UpdateBa($item->id, $item->name, $host[$key%4]));
+            echo $key . '----' . $item->id . '----' . $item->name . '----' . $host[$key%4];
             echo '<br>';
         }
-        #return view('ba_query', ['ids' => $content]);
     }
 }
