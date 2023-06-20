@@ -49,3 +49,4 @@ $api->version('v1', function($api){
 
 Route::get('update/beian/tmp_name/{id}', [BaQueryController::class, 'show']);
 Route::get('update/beian/list', [BaQueryController::class, 'list']);
+Route::get('name/create/beian', [NamesController::class, 'addBeian']);

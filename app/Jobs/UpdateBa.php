@@ -61,6 +61,5 @@ class UpdateBa implements ShouldQueue
         }else{
             print_r($data);
         }
-
     }
 }
