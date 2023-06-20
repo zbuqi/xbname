@@ -137,38 +137,6 @@ class NamesController extends Controller
     public function addBeianName()
     {
         $post_data = file_get_contents('php://input');
-
-        $data = TmpNames::where('is_beian', true)->get();
-
-        $data = json_encode($data, JSON_UNESCAPED_UNICODE);
-        $data = preg_replace('/"id":[0-9]+,/', '', $data);
-        $data = preg_replace('/"query_num":[0-9]+,/', '', $data);
-        $data = preg_replace('/true/', '1', $data);
-        $data = json_decode($data, true);
-        //获取最大id
-        $maximum_id = Names::max('id');
-        foreach($data as $key=>$item){
-            $array = json_encode($item, JSON_UNESCAPED_UNICODE);
-            $array = preg_replace('/"id":[0-9]+,/', '', $array);
-            $array = preg_replace('/"query_num":[0-9]+,/', '', $array);
-            $array = preg_replace('/true/', '1', $array);
-            $array = json_decode($array, true);
-            $array['id'] = $key + $maximum_id + 1;
-            /*提交队列*/
-            $this->dispatch(new addBa($item->id, $item->name, $array));
-        }  
-        $res = [];
-        $res['code'] = 20000;
-        $res['message'] = '数据提交成功' . count($data);
-        $res['data'] = 1;
-        return $res;
-    }
-
-    /*通过临时域名添加备案域名*/
-    /*
-    public function addBeianName()
-    {
-        $post_data = file_get_contents('php://input');
         $data = TmpNames::where('is_beian', true)->get();
 
         $data = json_encode($data, JSON_UNESCAPED_UNICODE);
@@ -177,18 +145,20 @@ class NamesController extends Controller
         $data = preg_replace('/true/', '1', $data);
         $data = json_decode($data, true);
 
-        $mysql_datas = json_encode(Names::get(), JSON_UNESCAPED_UNICODE);
+        #$mysql_datas = json_encode(Names::get(), JSON_UNESCAPED_UNICODE);
         $cf_names = [];
         //获取最大id
         $maximum_id = Names::max('id');
         foreach ($data as $key=>$item) {
             $data[$key]['id'] = $key + $maximum_id + 1;
 			//查询重复
+            /*
             $is_repeat  = stripos($mysql_datas, $item['name']);
             if($is_repeat){
                 $cf_names[] = $item;
             }
-			
+            */
+
         }
 
         $res = [];
@@ -205,27 +175,44 @@ class NamesController extends Controller
         }
         return $res;
     }
-    */
     public function addBeian()
     {
-        $data = TmpNames::where('is_beian', true)->take(60)->get();
-        
+        $data = TmpNames::where('is_beian', true)->get();
+
+        $data = json_encode($data, JSON_UNESCAPED_UNICODE);
+        $data = preg_replace('/"id":[0-9]+,/', '', $data);
+        $data = preg_replace('/"query_num":[0-9]+,/', '', $data);
+        $data = preg_replace('/true/', '1', $data);
+        $data = json_decode($data, true);
+
+        #$mysql_datas = json_encode(Names::get(), JSON_UNESCAPED_UNICODE);
+        $cf_names = [];
         //获取最大id
         $maximum_id = Names::max('id');
-        foreach($data as $key=>$item){
-            $array = json_encode($item, JSON_UNESCAPED_UNICODE);
-            $array = preg_replace('/"id":[0-9]+,/', '', $array);
-            $array = preg_replace('/"query_num":[0-9]+,/', '', $array);
-            $array = preg_replace('/true/', '1', $array);
-            $array = json_decode($array, true);
-            $array['id'] = $key + $maximum_id + 1;
+        foreach ($data as $key=>$item) {
+            $data[$key]['id'] = $key + $maximum_id + 1;
+            //查询重复
+            /*
+            $is_repeat  = stripos($mysql_datas, $item['name']);
+            if($is_repeat){
+                $cf_names[] = $item;
+            }
+            */
 
-            /*提交队列*/
-            $this->dispatch(new addBa($item->id, $item->name, $array));
-
-            echo $item->id . '----' . $item->name . '----';
-            print_r($array);
-            echo '<br><br>';
         }
+
+        $res = [];
+        $res['code'] = 20000;
+        if(count($cf_names) == 0){
+            if(Names::insert($data)){
+                TmpNames::where('is_beian', true)->delete();
+            }
+            $res['message'] = '数据提交成功';
+            $res['data'] = 1;
+        }else{
+            $res['message'] = '有重复数据';
+            $res['data'] =  $cf_names;
+        }
+        return $res;
     }
 }
